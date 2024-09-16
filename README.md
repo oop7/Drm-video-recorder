@@ -34,6 +34,8 @@ After downloading, follow the instructions in the [tutorial](https://www.youtube
 
 ## 💻 **Usage**
 
+## **make sure to record in fullscreen mode.**
+
 1. **Executable Version(Recommended):**
 You can also download the pre-built executable version of the script from the [releases section](https://github.com/oop7/drm-video-recorder/releases) of this repository.
 
