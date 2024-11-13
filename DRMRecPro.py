@@ -71,8 +71,16 @@ class VideoRecorderApp(QWidget):
         if not self.recording_process:
             self.status_label.setText('<font color="green">Recording started...</font>')
             self.recording_process = subprocess.Popen([
-                'ffmpeg', '-f', 'gdigrab', '-framerate', '60', '-i', 'desktop',
-                '-c:v', 'libx264', '-b:v', '8000k', '-pix_fmt', 'yuv420p', self.raw_output_file
+                'ffmpeg',
+                # Video input
+                '-f', 'gdigrab', '-framerate', '60', '-i', 'desktop',
+                # Audio input
+                '-f', 'dshow', '-i', 'audio=Microphone Array (Realtek(R) Audio)',
+                # Output options
+                '-c:v', 'libx264', '-b:v', '8000k',
+                '-c:a', 'aac', '-b:a', '192k',  # Audio codec and bitrate
+                '-pix_fmt', 'yuv420p',
+                self.raw_output_file
             ])
         else:
             self.status_label.setText('<font color="yellow">Recording is already in progress.</font>')
