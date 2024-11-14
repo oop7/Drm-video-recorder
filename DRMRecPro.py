@@ -69,16 +69,27 @@ class VideoRecorderApp(QWidget):
 
     def start_recording(self):
         if not self.recording_process:
+            # First, list available audio devices
+            try:
+                devices = subprocess.check_output(
+                    ['ffmpeg', '-list_devices', 'true', '-f', 'dshow', '-i', 'dummy'],
+                    stderr=subprocess.STDOUT,
+                    universal_newlines=True
+                )
+                print("Available devices:", devices)
+            except subprocess.CalledProcessError as e:
+                print("Device list output:", e.output)
+
             self.status_label.setText('<font color="green">Recording started...</font>')
             self.recording_process = subprocess.Popen([
                 'ffmpeg',
                 # Video input
                 '-f', 'gdigrab', '-framerate', '60', '-i', 'desktop',
-                # Audio input
-                '-f', 'dshow', '-i', 'audio=Microphone Array (Realtek(R) Audio)',
+                # Audio input - using default audio device
+                '-f', 'dshow', '-i', 'audio=@device_cm_{33D9A762-90C8-11D0-BD43-00A0C911CE86}\wave_{F0F4E03F-A3A5-4A9E-8F8B-A4A8D1DFA9D6}',
                 # Output options
                 '-c:v', 'libx264', '-b:v', '8000k',
-                '-c:a', 'aac', '-b:a', '192k',  # Audio codec and bitrate
+                '-c:a', 'aac', '-b:a', '192k',
                 '-pix_fmt', 'yuv420p',
                 self.raw_output_file
             ])
